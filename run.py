@@ -25,6 +25,13 @@ from time import time
 from common.utils import deterministic_random
 
 args = parse_args()
+
+if args.dataset == 'ntu':
+    if args.subjects_train == 'S1,S5,S6,S7,S8': # Default for h36m
+        args.subjects_train = 'Train/S1,Train/S2,Train/S4,Train/S5,Train/S8,Train/S9,Train/S13,Train/S14,Train/S15,Train/S16,Train/S17,Train/S18,Train/S19,Train/S25,Train/S27,Train/S28,Train/S31,Train/S34,Train/S35,Train/S38'
+    if args.subjects_test == 'S9,S11': # Default for h36m
+        args.subjects_test = 'Validate/S3,Validate/S6,Validate/S7,Validate/S10,Validate/S11,Validate/S12,Validate/S20,Validate/S21,Validate/S22,Validate/S23,Validate/S24,Validate/S26,Validate/S29,Validate/S30,Validate/S32,Validate/S33,Validate/S36,Validate/S37,Validate/S39,Validate/S40'
+
 print(args)
 
 try:
@@ -42,6 +49,9 @@ if args.dataset == 'h36m':
 elif args.dataset.startswith('humaneva'):
     from common.humaneva_dataset import HumanEvaDataset
     dataset = HumanEvaDataset(dataset_path)
+elif args.dataset == 'ntu':
+    from common.ntu_dataset import NTUDataset
+    dataset = NTUDataset(dataset_path)
 elif args.dataset.startswith('custom'):
     from common.custom_dataset import CustomDataset
     dataset = CustomDataset('data/data_2d_' + args.dataset + '_' + args.keypoints + '.npz')
@@ -128,7 +138,8 @@ def fetch(subjects, action_filter=None, subset=1, parse_3d_poses=True):
                 
             if subject in dataset.cameras():
                 cams = dataset.cameras()[subject]
-                assert len(cams) == len(poses_2d), 'Camera count mismatch'
+                if len(cams) != len(poses_2d):
+                    cams = cams[:len(poses_2d)]
                 for cam in cams:
                     if 'intrinsic' in cam:
                         out_camera_params.append(cam['intrinsic'])

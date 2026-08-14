@@ -1,0 +1,6 @@
+venv/
+data/*.npz
+data/nturgb+d_skeletons/
+checkpoint/
+__pycache__/
+*.skeleton

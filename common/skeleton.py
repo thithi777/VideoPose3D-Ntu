@@ -86,3 +86,9 @@ class Skeleton:
         for i, parent in enumerate(self._parents):
             if parent != -1:
                 self._children[parent].append(i)
+
+nwucla_17_skeleton = Skeleton(
+    parents=[-1, 0, 1, 2, 3, 0, 5, 6, 7, 0, 9, 9, 11, 12, 9, 14, 15],
+    joints_left=[5, 6, 7, 8, 11, 12, 13],
+    joints_right=[1, 2, 3, 4, 14, 15, 16]
+)
